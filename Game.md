@@ -16,5 +16,5 @@
  >> inverted strings
  > - [*Flute.0.0.4*](https://is.gd/Ecft50)
  >> bass + drums
- > - [*Flute.1.0.4*](https://is.gd/YT3iVb)
+ > - [*Flute.1.1.4*](https://is.gd/YT3iVb)
  >> loop structure
