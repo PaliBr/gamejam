@@ -30,6 +30,7 @@ export class Preloader extends Scene {
         this.load.image("star", "star.png");
         this.load.audio("zvuk", "BeepBox-Song.wav");
         this.load.audio("zvuk2", "zvuk2.mp3");
+        this.load.audio("menuMusic", "Flute.mp3");
     }
 
     create() {
