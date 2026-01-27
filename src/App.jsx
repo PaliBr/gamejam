@@ -36,7 +36,7 @@ function App() {
 
         if (scene) {
             // Play sound
-            scene.sound.play("zvuk");
+            scene.sound.play("zvuk2");
             // Add more stars
             const x = Phaser.Math.Between(64, scene.scale.width - 64);
             const y = Phaser.Math.Between(64, scene.scale.height - 64);
