@@ -1,4 +1,4 @@
-# Project *Game*
+# Project _Game_
 
 ## Development
 
@@ -8,13 +8,14 @@
 
 ## Soundtrack
 
- > - [*Flute.0.0.1*](https://is.gd/0MXuq4)
- >> first commit
- > - [*Flute.0.0.2*](https://is.gd/SmaKw0)
- >> add strings
- > - [*Flute.0.0.3*](https://is.gd/iGGhSf)
- >> inverted strings
- > - [*Flute.0.0.4*](https://is.gd/Ecft50)
- >> bass + drums
- > - [*Flute.1.1.4*](https://is.gd/YT3iVb)
- >> loop structure
+> - [_Flute.0.0.1_](https://is.gd/0MXuq4)
+>     > first commit
+> - [_Flute.0.0.2_](https://is.gd/SmaKw0)
+>     > add strings
+> - [_Flute.0.0.3_](https://is.gd/iGGhSf)
+>     > inverted strings
+> - [_Flute.0.0.4_](https://is.gd/Ecft50)
+>     > bass + drums
+> - [_Flute.1.1.4_](https://is.gd/YT3iVb)
+>     > loop structure
+
