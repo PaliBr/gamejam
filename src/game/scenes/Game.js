@@ -214,42 +214,78 @@ export class Game extends Phaser.Scene {
     }
 
     createUI() {
-        // Create medieval UI background bar at bottom (always visible)
+        // Create modern futuristic UI background bar at bottom
         const menuY = this.gridHeight * this.gridSize + 5;
         const uiBg = this.add.graphics();
-        uiBg.fillStyle(0x5d4e37, 1); // Medieval brown
+
+        // Medieval parchment background (aged leather/wood look)
+        uiBg.fillStyle(0x3a3028, 1); // Dark aged leather
         uiBg.fillRect(0, menuY - 5, 1024, 64);
 
-        // Add stone texture pattern (lines)
-        uiBg.lineStyle(1, 0x4a3a27, 0.6);
-        for (let i = 0; i < 10; i++) {
-            uiBg.lineBetween(0, menuY - 5 + i * 7, 1024, menuY - 5 + i * 7);
-        }
-
-        // Decorative borders
-        uiBg.lineStyle(3, 0x8b7355, 1);
+        // Stone/wood top border
+        uiBg.lineStyle(3, 0x5a4a38, 1); // Dark wood
         uiBg.lineBetween(0, menuY - 5, 1024, menuY - 5);
+        uiBg.lineStyle(2, 0x7a6a58, 0.8); // Lighter wood accent
+        uiBg.lineBetween(0, menuY - 3, 1024, menuY - 3);
+
+        // Bottom ornate border
+        uiBg.lineStyle(3, 0x5a4a38, 1); // Dark wood
         uiBg.lineBetween(0, menuY + 59, 1024, menuY + 59);
+        uiBg.lineStyle(2, 0x7a6a58, 0.8); // Lighter wood accent
+        uiBg.lineBetween(0, menuY + 57, 1024, menuY + 57);
+
+        // Medieval decorative corner elements (stone blocks)
+        uiBg.fillStyle(0x4a3a28, 0.6);
+        uiBg.fillRect(0, menuY - 5, 8, 64);
+        uiBg.fillRect(1016, menuY - 5, 8, 64);
 
         uiBg.setScrollFactor(0);
-        uiBg.setDepth(-1); // Behind other UI elements
+        uiBg.setDepth(-1);
 
-        this.healthText = this.add.text(10, 10, `Health: ${this.health}`, {
+        // Medieval stat displays with aged parchment style
+        this.healthText = this.add.text(20, 12, `HEALTH: ${this.health}`, {
             fontSize: "18px",
-            fill: "#ffffff",
+            fill: "#c41e3a",
+            fontFamily: "serif",
+            fontStyle: "bold",
+            stroke: "#1a1410",
+            strokeThickness: 2,
         });
-        this.moneyText = this.add.text(10, 35, `Money: ${this.money}`, {
+        this.healthText.setScrollFactor(0);
+
+        this.moneyText = this.add.text(20, 32, `GOLD: ${this.money}`, {
             fontSize: "18px",
-            fill: "#ffff00",
+            fill: "#d4af37",
+            fontFamily: "serif",
+            fontStyle: "bold",
+            stroke: "#1a1410",
+            strokeThickness: 2,
         });
-        this.waveText = this.add.text(10, 60, `Wave: ${this.wave}`, {
+        this.moneyText.setScrollFactor(0);
+
+        this.waveText = this.add.text(20, 52, `WAVE: ${this.wave}`, {
             fontSize: "18px",
-            fill: "#00ff00",
+            fill: "#8b7355",
+            fontFamily: "serif",
+            fontStyle: "bold",
+            stroke: "#1a1410",
+            strokeThickness: 2,
         });
-        this.infoText = this.add.text(10, 85, "Click to place towers ($100)", {
-            fontSize: "14px",
-            fill: "#aaaaaa",
-        });
+        this.waveText.setScrollFactor(0);
+
+        this.infoText = this.add.text(
+            300,
+            25,
+            "Click to place towers (100 Gold)",
+            {
+                fontSize: "11px",
+                fill: "#b8956a",
+                fontFamily: "serif",
+                stroke: "#1a1410",
+                strokeThickness: 1,
+            },
+        );
+        this.infoText.setScrollFactor(0);
 
         // Tower upgrade UI at bottom
         this.upgradeMenuContainer = null;
@@ -259,7 +295,7 @@ export class Game extends Phaser.Scene {
         const castleX =
             (this.gridWidth - 1) * this.gridSize + this.gridSize / 2;
         const castleY =
-            (this.gridHeight - 1) * this.gridSize + this.gridSize / 2;
+            (this.gridHeight - 2) * this.gridSize + this.gridSize / 2;
 
         this.targetZone = this.add.graphics();
         this.targetZone.x = castleX;
@@ -274,172 +310,340 @@ export class Game extends Phaser.Scene {
         }
         this.upgradeMenuContainer = [];
 
-        const menuY = this.gridHeight * this.gridSize + 5;
+        const menuY = this.gridHeight * this.gridSize + 5 - 209;
         const menuX = 10;
+        const menuWidth = 430;
+        const menuHeight = 209;
 
-        // Title with medieval styling (background is now persistent in createUI)
+        // Medieval wooden panel background
+        const menuBg = this.add.graphics();
+        menuBg.fillStyle(0x5a4a38, 1); // Medium wood tone
+        menuBg.fillRect(menuX, menuY, menuWidth, menuHeight);
+
+        // Dark wood outer border (main frame)
+        menuBg.lineStyle(4, 0x2a2018, 1); // Very dark wood
+        menuBg.strokeRect(menuX, menuY, menuWidth, menuHeight);
+
+        // Lighter wood inner accent
+        menuBg.lineStyle(2, 0x8b7355, 1); // Lighter wood accent
+        menuBg.strokeRect(menuX + 3, menuY + 3, menuWidth - 6, menuHeight - 6);
+
+        // Corner decorations (stone blocks)
+        menuBg.fillStyle(0x3a2a18, 0.8);
+        menuBg.fillRect(menuX, menuY, 6, 6);
+        menuBg.fillRect(menuX + menuWidth - 6, menuY, 6, 6);
+        menuBg.fillRect(menuX, menuY + menuHeight - 6, 6, 6);
+        menuBg.fillRect(menuX + menuWidth - 6, menuY + menuHeight - 6, 6, 6);
+
+        menuBg.setScrollFactor(0);
+        this.upgradeMenuContainer.push(menuBg);
+
+        // Medieval parchment title with ornate styling
         const titleText = this.add.text(
-            menuX + 5,
-            menuY + 2,
-            "⚔ Tower Upgrades ⚔",
+            menuX + menuWidth / 2,
+            menuY + 8,
+            "~ Tower Enhancements ~",
             {
-                fontSize: "14px",
-                fill: "#ffd700",
+                fontSize: "12px",
+                fill: "#d4af37",
                 fontStyle: "bold",
-                fontFamily: "Georgia, serif",
+                fontFamily: "serif",
+                stroke: "#1a1410",
+                strokeThickness: 2,
+                align: "center",
             },
         );
+        titleText.setOrigin(0.5, 0);
         titleText.setScrollFactor(0);
         this.upgradeMenuContainer.push(titleText);
 
+        const iconStartX = menuX + 15;
+        const iconStartY = menuY + 89;
+        const iconSpacing = 99;
+
         // Range upgrade with icon
-        this.createUpgradeIcon(
-            tower,
-            "range",
-            menuX + 120,
-            menuY + 10,
-            "Range",
-        );
+        this.createUpgradeIcon(tower, "range", iconStartX, iconStartY, "RANGE");
 
         // Strength upgrade with icon
         this.createUpgradeIcon(
             tower,
             "strength",
-            menuX + 220,
-            menuY + 10,
-            "Strength",
+            iconStartX + iconSpacing,
+            iconStartY,
+            "POWER",
         );
 
         // Accuracy upgrade with icon
         this.createUpgradeIcon(
             tower,
             "accuracy",
-            menuX + 320,
-            menuY + 10,
-            "Accuracy",
+            iconStartX + iconSpacing * 2,
+            iconStartY,
+            "PRECISION",
         );
 
         // Fire rate upgrade with icon
         this.createUpgradeIcon(
             tower,
             "fireRate",
-            menuX + 420,
-            menuY + 10,
-            "Speed",
+            iconStartX + iconSpacing * 3,
+            iconStartY,
+            "FIREPOWER",
         );
     }
 
     createUpgradeIcon(tower, upgradeType, x, y, label) {
-        const size = 45;
+        const size = 75; // Increased from 55
         const cost = tower.upgradeCosts[upgradeType];
         const level = tower.upgrades[upgradeType];
 
-        // Medieval stone background with texture
+        // Shadow effect for depth
+        const shadow = this.add.graphics();
+        shadow.fillStyle(0x000000, 0.3);
+        shadow.fillRect(x + 2, y + 2, size, size);
+        shadow.setScrollFactor(0);
+        this.upgradeMenuContainer.push(shadow);
+
+        // Medieval stone/wood icon background with gradient effect
         const bg = this.add.graphics();
-        bg.fillStyle(0x6b5345, 1); // Dark stone
+        bg.fillStyle(0x9d8b6e, 1); // Base leather/parchment color
         bg.fillRect(x, y, size, size);
 
-        // Add highlight on top-left for 3D effect
-        bg.lineStyle(2, 0x8b7355, 1);
-        bg.lineBetween(x, y, x + size, y);
+        // Darker shading on left/top
+        bg.fillStyle(0x7a6a52, 0.4);
+        bg.fillRect(x, y, size / 2, size / 3);
 
-        // Dark shadow on bottom-right
-        bg.lineStyle(2, 0x4a3a27, 1);
-        bg.lineBetween(x, y + size, x + size, y + size);
-        bg.lineBetween(x + size, y, x + size, y + size);
+        // Dark wood outer border (main frame)
+        bg.lineStyle(4, 0x3a2a18, 1); // Very dark wood
+        bg.strokeRect(x, y, size, size);
 
-        // Border
-        bg.lineStyle(2, 0xdaa520, 1);
+        // Lighter wood inner accent - double border for ornate look
+        bg.lineStyle(2, 0xb8a88e, 1); // Light worn edge
+        bg.strokeRect(x + 3, y + 3, size - 6, size - 6);
+
+        bg.lineStyle(1, 0xa89878, 0.8);
         bg.strokeRect(x + 1, y + 1, size - 2, size - 2);
+
+        // Corner ornaments
+        bg.fillStyle(0xd4af37, 0.6);
+        const cornerSize = 4;
+        bg.fillRect(x + 2, y + 2, cornerSize, cornerSize);
+        bg.fillRect(x + size - cornerSize - 2, y + 2, cornerSize, cornerSize);
+        bg.fillRect(x + 2, y + size - cornerSize - 2, cornerSize, cornerSize);
+        bg.fillRect(
+            x + size - cornerSize - 2,
+            y + size - cornerSize - 2,
+            cornerSize,
+            cornerSize,
+        );
 
         bg.setScrollFactor(0);
         this.upgradeMenuContainer.push(bg);
 
-        // Icon graphics
+        // Icon graphics with improved medieval style
         const icon = this.add.graphics();
         icon.setScrollFactor(0);
 
         if (upgradeType === "range") {
-            // Range icon: medieval crossbow/bow
-            icon.fillStyle(0xccaa00, 1);
-            icon.fillRect(x + size / 2 - 2, y + 8, 4, 20);
-            icon.lineStyle(2, 0xccaa00, 1);
-            icon.arc(x + size / 2, y + 8, 12, Math.PI, 2 * Math.PI);
-            icon.stroke();
+            // Range icon: archer arrow - improved
+            icon.lineStyle(3, 0xd4af37, 1);
+            icon.lineBetween(
+                x + size / 2 - 12,
+                y + size / 2,
+                x + size / 2 + 12,
+                y + size / 2,
+            );
+            icon.lineBetween(
+                x + size / 2 + 12,
+                y + size / 2,
+                x + size / 2 + 8,
+                y + size / 2 - 4,
+            );
+            icon.lineBetween(
+                x + size / 2 + 12,
+                y + size / 2,
+                x + size / 2 + 8,
+                y + size / 2 + 4,
+            );
+            icon.fillStyle(0xd4af37, 1);
+            icon.fillCircle(x + size / 2 - 12, y + size / 2, 3);
+            icon.fillCircle(x + size / 2, y + size / 2, 4);
         } else if (upgradeType === "strength") {
-            // Strength icon: sword
-            icon.fillStyle(0xff8844, 1);
-            icon.fillRect(x + size / 2 - 2, y + 5, 4, 25);
-            icon.fillStyle(0xaa5533, 1);
-            icon.fillRect(x + size / 2 - 8, y + 26, 16, 6);
-            icon.fillStyle(0xffdd00, 1);
-            icon.fillRect(x + size / 2 - 3, y + 28, 6, 3);
+            // Strength icon: larger, more detailed sword
+            icon.lineStyle(3, 0xc41e3a, 1);
+            icon.lineBetween(x + size / 2, y + 10, x + size / 2, y + size - 12);
+            icon.lineBetween(
+                x + size / 2 - 8,
+                y + 18,
+                x + size / 2 + 8,
+                y + 18,
+            );
+            icon.lineStyle(2, 0xc41e3a, 1);
+            icon.lineBetween(
+                x + size / 2 - 6,
+                y + 20,
+                x + size / 2 + 6,
+                y + 20,
+            );
+            icon.fillStyle(0xc41e3a, 1);
+            icon.fillCircle(x + size / 2, y + size - 8, 4);
         } else if (upgradeType === "accuracy") {
-            // Accuracy icon: target with arrows
-            icon.lineStyle(2, 0x44ff44, 1);
-            icon.strokeCircle(x + size / 2, y + size / 2, 14);
-            icon.strokeCircle(x + size / 2, y + size / 2, 8);
-            icon.fillStyle(0x44ff44, 1);
-            icon.fillCircle(x + size / 2, y + size / 2, 3);
-            // Crosshair lines
-            icon.lineBetween(x + 3, y + size / 2, x + size - 3, y + size / 2);
-            icon.lineBetween(x + size / 2, y + 3, x + size / 2, y + size - 3);
+            // Accuracy icon: improved shield with target
+            icon.lineStyle(3, 0x8b7355, 1);
+            icon.strokeCircle(x + size / 2, y + size / 2, 16);
+            icon.strokeCircle(x + size / 2, y + size / 2, 10);
+            icon.strokeCircle(x + size / 2, y + size / 2, 4);
+            icon.lineStyle(2, 0x8b7355, 1);
+            icon.lineBetween(
+                x + size / 2 - 6,
+                y + size / 2,
+                x + size / 2 + 6,
+                y + size / 2,
+            );
+            icon.lineBetween(
+                x + size / 2,
+                y + size / 2 - 6,
+                x + size / 2,
+                y + size / 2 + 6,
+            );
+            icon.fillStyle(0x8b7355, 1);
+            icon.fillCircle(x + size / 2, y + size / 2, 2);
         } else if (upgradeType === "fireRate") {
-            // Fire rate icon: flaming torch/fire
-            icon.fillStyle(0xff6600, 1);
-            icon.fillRect(x + size / 2 - 3, y + 18, 6, 18);
-            icon.fillStyle(0xff0000, 1);
-            icon.fillCircle(x + size / 2, y + 8, 6);
-            icon.fillStyle(0xffaa00, 1);
-            icon.fillCircle(x + size / 2 - 3, y + 5, 4);
-            icon.fillCircle(x + size / 2 + 3, y + 7, 4);
+            // Fire rate icon: improved flame
+            icon.fillStyle(0xff7722, 1);
+            icon.beginPath();
+            icon.moveTo(x + size / 2, y + 12);
+            icon.lineTo(x + size / 2 + 8, y + 22);
+            icon.lineTo(x + size / 2 + 4, y + 28);
+            icon.lineTo(x + size / 2 + 10, y + 35);
+            icon.lineTo(x + size / 2, y + 42);
+            icon.lineTo(x + size / 2 - 10, y + 35);
+            icon.lineTo(x + size / 2 - 4, y + 28);
+            icon.lineTo(x + size / 2 - 8, y + 22);
+            icon.closePath();
+            icon.fillPath();
+
+            // Flame highlight
+            icon.fillStyle(0xffaa44, 0.7);
+            icon.beginPath();
+            icon.moveTo(x + size / 2, y + 15);
+            icon.lineTo(x + size / 2 + 5, y + 25);
+            icon.lineTo(x + size / 2, y + 32);
+            icon.lineTo(x + size / 2 - 5, y + 25);
+            icon.closePath();
+            icon.fillPath();
         }
         this.upgradeMenuContainer.push(icon);
 
-        // Label text below icon
-        const labelText = this.add.text(x + size / 2, y + size + 18, label, {
-            fontSize: "10px",
-            fill: "#ffd700",
+        // Level text in corner - improved visibility
+        const levelText = this.add.text(x + size - 12, y + 5, `Lv${level}`, {
+            fontSize: "11px",
+            fill: "#d4af37",
+            fontStyle: "bold",
+            fontFamily: "serif",
+            stroke: "#1a1410",
+            strokeThickness: 2,
+        });
+        levelText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(levelText);
+
+        // Cost text - improved visibility
+        const costText = this.add.text(
+            x + size / 2,
+            y + size - 14,
+            `${cost}g`,
+            {
+                fontSize: "11px",
+                fill: "#d4af37",
+                align: "center",
+                fontStyle: "bold",
+                fontFamily: "serif",
+                stroke: "#1a1410",
+                strokeThickness: 2,
+            },
+        );
+        costText.setOrigin(0.5, 0);
+        costText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(costText);
+
+        // Label text below icon - larger and more readable
+        const labelText = this.add.text(x + size / 2, y + size + 8, label, {
+            fontSize: "12px",
+            fill: "#d4af37",
             fontStyle: "bold",
             align: "center",
-            fontFamily: "Georgia, serif",
+            fontFamily: "serif",
+            stroke: "#1a1410",
+            strokeThickness: 2,
         });
         labelText.setOrigin(0.5, 0);
         labelText.setScrollFactor(0);
         this.upgradeMenuContainer.push(labelText);
 
-        // Level text in corner
-        const levelText = this.add.text(
-            x + size - 10,
-            y + size - 12,
-            `Lv${level}`,
-            {
-                fontSize: "10px",
-                fill: "#ffff00",
-                fontStyle: "bold",
-                fontFamily: "Georgia, serif",
-            },
-        );
-        levelText.setScrollFactor(0);
-        this.upgradeMenuContainer.push(levelText);
-
-        // Cost text
-        const costText = this.add.text(x + size / 2, y + size + 5, `$${cost}`, {
-            fontSize: "11px",
-            fill: "#ffdd00",
-            align: "center",
-            fontStyle: "bold",
-            fontFamily: "Georgia, serif",
-        });
-        costText.setOrigin(0.5, 0);
-        costText.setScrollFactor(0);
-        this.upgradeMenuContainer.push(costText);
-
-        // Make clickable
+        // Make clickable with visual feedback
         const button = this.add.zone(x + size / 2, y + size / 2, size, size);
         button.setScrollFactor(0);
-        button.setInteractive();
-        button.on("pointerdown", () => this.upgradeTower(tower, upgradeType));
+        button.setInteractive({ useHandCursor: true });
+
+        // Hover effect
+        button.on("pointerover", () => {
+            this.tweens.add({
+                targets: bg,
+                alpha: 1.15,
+                duration: 100,
+            });
+        });
+
+        button.on("pointerout", () => {
+            this.tweens.add({
+                targets: bg,
+                alpha: 1,
+                duration: 100,
+            });
+        });
+
+        // Click handler with press effect
+        button.on("pointerdown", (pointer) => {
+            pointer.event.stopPropagation();
+
+            // Darken for press effect
+            const originalColor = 0x9d8b6e;
+            const pressedColor = 0x6a5a42;
+
+            bg.clear();
+            bg.fillStyle(pressedColor, 1); // Darken on press
+            bg.fillRect(x, y, size, size);
+
+            // Redraw borders
+            bg.lineStyle(4, 0x3a2a18, 1);
+            bg.strokeRect(x, y, size, size);
+            bg.lineStyle(2, 0x8b7355, 1);
+            bg.strokeRect(x + 3, y + 3, size - 6, size - 6);
+            bg.lineStyle(1, 0xa89878, 0.8);
+            bg.strokeRect(x + 1, y + 1, size - 2, size - 2);
+
+            // Delay upgrade to allow press effect to complete
+            this.time.delayedCall(150, () => {
+                this.upgradeTower(tower, upgradeType);
+            });
+
+            // Return to normal color after press
+            this.time.delayedCall(150, () => {
+                if (bg && bg.active) {
+                    bg.clear();
+                    bg.fillStyle(originalColor, 1);
+                    bg.fillRect(x, y, size, size);
+
+                    // Redraw borders
+                    bg.lineStyle(4, 0x3a2a18, 1);
+                    bg.strokeRect(x, y, size, size);
+                    bg.lineStyle(2, 0xb8a88e, 1);
+                    bg.strokeRect(x + 3, y + 3, size - 6, size - 6);
+                    bg.lineStyle(1, 0xa89878, 0.8);
+                    bg.strokeRect(x + 1, y + 1, size - 2, size - 2);
+                }
+            });
+        });
         this.upgradeMenuContainer.push(button);
     }
 
@@ -578,28 +782,39 @@ export class Game extends Phaser.Scene {
     }
 
     canPlaceTower(gridX, gridY) {
-        // Don't allow blocking tiles that are critical paths
-        // For simplicity, prevent blocking the last column or row approaching target
+        // Only block towers directly on the target tile
         const targetX = this.gridWidth - 1;
-        const targetY = this.gridHeight - 1;
+        const targetY = this.gridHeight - 2;
 
-        // Don't block the target tile or the tiles that lead directly to it
-        if (gridX === targetX || gridY === targetY) {
-            // Allow blocking if there's an alternative route
-            // For now, just check if this is one of the critical last tiles
-            if (
-                (gridX === targetX - 1 && gridY === targetY) ||
-                (gridX === targetX && gridY === targetY - 1)
-            ) {
-                // These are the primary last tiles, don't block them
-                return false;
-            }
+        // Don't place on the target itself
+        if (gridX === targetX && gridY === targetY) {
+            return false;
         }
 
+        // Allow placement anywhere else - enemies can navigate around
         return true;
     }
 
     onPointerDown(pointer) {
+        // Don't place towers if clicking on UI elements (upgrade menu area)
+        // Menu is positioned at screen coordinates with scroll factor 0
+        const screenX = pointer.x; // Screen coordinates, not world
+        const screenY = pointer.y;
+        const menuX = 10;
+        const menuWidth = 430;
+        const menuStartY = this.gridHeight * this.gridSize + 5 - 209;
+        const menuHeight = 209;
+
+        // Only block if clicking inside the menu box (both X and Y must be within bounds)
+        if (
+            screenX >= menuX &&
+            screenX <= menuX + menuWidth &&
+            screenY >= menuStartY &&
+            screenY <= menuStartY + menuHeight
+        ) {
+            return;
+        }
+
         const gridX = Math.floor(pointer.worldX / this.gridSize);
         const gridY = Math.floor(pointer.worldY / this.gridSize);
 
@@ -657,8 +872,8 @@ export class Game extends Phaser.Scene {
                 this.requestPath(
                     currentGridX,
                     currentGridY,
-                    this.gridWidth - 2,
-                    this.gridHeight - 1,
+                    this.gridWidth - 1,
+                    this.gridHeight - 2,
                     enemy,
                 );
             }
@@ -671,6 +886,32 @@ export class Game extends Phaser.Scene {
         this.waveActive = true;
         this.waveEnemiesTotal = 5 + this.wave * 2; // 7 enemies wave 1, 9 wave 2, etc.
         this.waveEnemiesDefeated = 0;
+
+        const waveMessage = this.add.text(
+            512,
+            384,
+            `Wave ${this.wave} starting! ${this.waveEnemiesTotal} enemies`,
+            {
+                fontSize: "36px",
+                fill: "#d4af37",
+                fontFamily: "serif",
+                fontStyle: "bold",
+                stroke: "#1a1410",
+                strokeThickness: 3,
+                align: "center",
+            },
+        );
+        waveMessage.setOrigin(0.5, 0.5);
+        waveMessage.setScrollFactor(0);
+
+        // Fade out the message after 2 seconds
+        this.tweens.add({
+            targets: waveMessage,
+            alpha: 0,
+            duration: 1000,
+            delay: 1500,
+            onComplete: () => waveMessage.destroy(),
+        });
 
         this.infoText.setText(
             `Wave ${this.wave} starting! ${this.waveEnemiesTotal} enemies`,
@@ -708,7 +949,7 @@ export class Game extends Phaser.Scene {
         this.enemies.push(enemy);
 
         // Request path to one tile before target (adjacent to target)
-        this.requestPath(0, 0, this.gridWidth - 2, this.gridHeight - 1, enemy);
+        this.requestPath(0, 0, this.gridWidth - 1, this.gridHeight - 2, enemy);
     }
 
     requestPath(fromX, fromY, toX, toY, enemy) {
