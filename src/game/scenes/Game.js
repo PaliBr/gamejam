@@ -12,7 +12,7 @@ export class Game extends Phaser.Scene {
         // Game config
         this.gridSize = 64;
         this.gridWidth = 16; // 1024 / 64
-        this.gridHeight = 12; // 768 / 64
+        this.gridHeight = 11; // 704 / 64 (leaves bottom row for UI)
 
         // Game state
         this.health = 20;
@@ -126,29 +126,37 @@ export class Game extends Phaser.Scene {
 
         tile.clear();
 
-        // Calculate color based on health (20 = full green, 0 = full brown)
-        let baseColor;
+        // Calculate base color based on health
+        let baseColor, accentColor;
         if (health > 15) {
-            baseColor = 0x4a7c3f; // Dark green
+            baseColor = 0x3d7a2f; // Deep grass green
+            accentColor = 0x2d5a1f;
         } else if (health > 10) {
-            baseColor = 0x6a8c4f; // Yellow-green
+            baseColor = 0x5d8a3f; // Healthy green
+            accentColor = 0x3d6a1f;
         } else if (health > 5) {
-            baseColor = 0x8a7c3f; // Yellow-brown
+            baseColor = 0x8a8a3f; // Dry green-brown
+            accentColor = 0x6a6a1f;
         } else {
-            baseColor = 0x6b4423; // Brown
+            baseColor = 0x7a5a2f; // Dead brown
+            accentColor = 0x5a3a0f;
         }
 
         // Draw base
         tile.fillStyle(baseColor, 1);
         tile.fillRect(cellX, cellY, this.gridSize, this.gridSize);
 
-        // Add texture patches
+        // Add edge shadow for depth
+        tile.lineStyle(1, accentColor, 0.3);
+        tile.strokeRect(cellX, cellY, this.gridSize, this.gridSize);
+
+        // Add minimal texture details
         if (health > 0) {
-            for (let i = 0; i < 8; i++) {
+            // Just a few accent spots for texture
+            tile.fillStyle(accentColor, 0.25);
+            for (let i = 0; i < 5; i++) {
                 const offsetX = Math.random() * this.gridSize;
                 const offsetY = Math.random() * this.gridSize;
-                const shade = baseColor + Math.floor(Math.random() * 0x101010);
-                tile.fillStyle(shade, 0.5);
                 tile.fillCircle(
                     cellX + offsetX,
                     cellY + offsetY,
@@ -158,7 +166,74 @@ export class Game extends Phaser.Scene {
         }
     }
 
+    updateGrassTileColor(x, y) {
+        const tile = this.grassTiles[y][x];
+        const health = this.grassHealth[y][x];
+        const cellX = x * this.gridSize;
+        const cellY = y * this.gridSize;
+
+        tile.clear();
+
+        // Calculate base color based on health
+        let baseColor, accentColor;
+        if (health > 15) {
+            baseColor = 0x3d7a2f; // Deep grass green
+            accentColor = 0x2d5a1f;
+        } else if (health > 10) {
+            baseColor = 0x5d8a3f; // Healthy green
+            accentColor = 0x3d6a1f;
+        } else if (health > 5) {
+            baseColor = 0x8a8a3f; // Dry green-brown
+            accentColor = 0x6a6a1f;
+        } else {
+            baseColor = 0x7a5a2f; // Dead brown
+            accentColor = 0x5a3a0f;
+        }
+
+        // Draw base
+        tile.fillStyle(baseColor, 1);
+        tile.fillRect(cellX, cellY, this.gridSize, this.gridSize);
+
+        // Add edge shadow
+        tile.lineStyle(1, accentColor, 0.3);
+        tile.strokeRect(cellX, cellY, this.gridSize, this.gridSize);
+
+        // Add minimal texture
+        if (health > 0) {
+            tile.fillStyle(accentColor, 0.25);
+            for (let i = 0; i < 3; i++) {
+                const offsetX = Math.random() * this.gridSize;
+                const offsetY = Math.random() * this.gridSize;
+                tile.fillCircle(
+                    cellX + offsetX,
+                    cellY + offsetY,
+                    1 + Math.random() * 1.5,
+                );
+            }
+        }
+    }
+
     createUI() {
+        // Create medieval UI background bar at bottom (always visible)
+        const menuY = this.gridHeight * this.gridSize + 5;
+        const uiBg = this.add.graphics();
+        uiBg.fillStyle(0x5d4e37, 1); // Medieval brown
+        uiBg.fillRect(0, menuY - 5, 1024, 64);
+
+        // Add stone texture pattern (lines)
+        uiBg.lineStyle(1, 0x4a3a27, 0.6);
+        for (let i = 0; i < 10; i++) {
+            uiBg.lineBetween(0, menuY - 5 + i * 7, 1024, menuY - 5 + i * 7);
+        }
+
+        // Decorative borders
+        uiBg.lineStyle(3, 0x8b7355, 1);
+        uiBg.lineBetween(0, menuY - 5, 1024, menuY - 5);
+        uiBg.lineBetween(0, menuY + 59, 1024, menuY + 59);
+
+        uiBg.setScrollFactor(0);
+        uiBg.setDepth(-1); // Behind other UI elements
+
         this.healthText = this.add.text(10, 10, `Health: ${this.health}`, {
             fontSize: "18px",
             fill: "#ffffff",
@@ -176,10 +251,9 @@ export class Game extends Phaser.Scene {
             fill: "#aaaaaa",
         });
 
-        this.healthText.setScrollFactor(0);
-        this.moneyText.setScrollFactor(0);
-        this.waveText.setScrollFactor(0);
-        this.infoText.setScrollFactor(0);
+        // Tower upgrade UI at bottom
+        this.upgradeMenuContainer = null;
+        this.selectedTower = null;
 
         // Draw target castle at bottom-right
         const castleX =
@@ -191,6 +265,206 @@ export class Game extends Phaser.Scene {
         this.targetZone.x = castleX;
         this.targetZone.y = castleY;
         this.drawCastle(this.targetZone, 0x888888); // Gray castle
+    }
+
+    showTowerUpgradeMenu(tower) {
+        // Remove old menu if exists
+        if (this.upgradeMenuContainer) {
+            this.upgradeMenuContainer.forEach((element) => element.destroy());
+        }
+        this.upgradeMenuContainer = [];
+
+        const menuY = this.gridHeight * this.gridSize + 5;
+        const menuX = 10;
+
+        // Title with medieval styling (background is now persistent in createUI)
+        const titleText = this.add.text(
+            menuX + 5,
+            menuY + 2,
+            "⚔ Tower Upgrades ⚔",
+            {
+                fontSize: "14px",
+                fill: "#ffd700",
+                fontStyle: "bold",
+                fontFamily: "Georgia, serif",
+            },
+        );
+        titleText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(titleText);
+
+        // Range upgrade with icon
+        this.createUpgradeIcon(
+            tower,
+            "range",
+            menuX + 120,
+            menuY + 10,
+            "Range",
+        );
+
+        // Strength upgrade with icon
+        this.createUpgradeIcon(
+            tower,
+            "strength",
+            menuX + 220,
+            menuY + 10,
+            "Strength",
+        );
+
+        // Accuracy upgrade with icon
+        this.createUpgradeIcon(
+            tower,
+            "accuracy",
+            menuX + 320,
+            menuY + 10,
+            "Accuracy",
+        );
+
+        // Fire rate upgrade with icon
+        this.createUpgradeIcon(
+            tower,
+            "fireRate",
+            menuX + 420,
+            menuY + 10,
+            "Speed",
+        );
+    }
+
+    createUpgradeIcon(tower, upgradeType, x, y, label) {
+        const size = 45;
+        const cost = tower.upgradeCosts[upgradeType];
+        const level = tower.upgrades[upgradeType];
+
+        // Medieval stone background with texture
+        const bg = this.add.graphics();
+        bg.fillStyle(0x6b5345, 1); // Dark stone
+        bg.fillRect(x, y, size, size);
+
+        // Add highlight on top-left for 3D effect
+        bg.lineStyle(2, 0x8b7355, 1);
+        bg.lineBetween(x, y, x + size, y);
+
+        // Dark shadow on bottom-right
+        bg.lineStyle(2, 0x4a3a27, 1);
+        bg.lineBetween(x, y + size, x + size, y + size);
+        bg.lineBetween(x + size, y, x + size, y + size);
+
+        // Border
+        bg.lineStyle(2, 0xdaa520, 1);
+        bg.strokeRect(x + 1, y + 1, size - 2, size - 2);
+
+        bg.setScrollFactor(0);
+        this.upgradeMenuContainer.push(bg);
+
+        // Icon graphics
+        const icon = this.add.graphics();
+        icon.setScrollFactor(0);
+
+        if (upgradeType === "range") {
+            // Range icon: medieval crossbow/bow
+            icon.fillStyle(0xccaa00, 1);
+            icon.fillRect(x + size / 2 - 2, y + 8, 4, 20);
+            icon.lineStyle(2, 0xccaa00, 1);
+            icon.arc(x + size / 2, y + 8, 12, Math.PI, 2 * Math.PI);
+            icon.stroke();
+        } else if (upgradeType === "strength") {
+            // Strength icon: sword
+            icon.fillStyle(0xff8844, 1);
+            icon.fillRect(x + size / 2 - 2, y + 5, 4, 25);
+            icon.fillStyle(0xaa5533, 1);
+            icon.fillRect(x + size / 2 - 8, y + 26, 16, 6);
+            icon.fillStyle(0xffdd00, 1);
+            icon.fillRect(x + size / 2 - 3, y + 28, 6, 3);
+        } else if (upgradeType === "accuracy") {
+            // Accuracy icon: target with arrows
+            icon.lineStyle(2, 0x44ff44, 1);
+            icon.strokeCircle(x + size / 2, y + size / 2, 14);
+            icon.strokeCircle(x + size / 2, y + size / 2, 8);
+            icon.fillStyle(0x44ff44, 1);
+            icon.fillCircle(x + size / 2, y + size / 2, 3);
+            // Crosshair lines
+            icon.lineBetween(x + 3, y + size / 2, x + size - 3, y + size / 2);
+            icon.lineBetween(x + size / 2, y + 3, x + size / 2, y + size - 3);
+        } else if (upgradeType === "fireRate") {
+            // Fire rate icon: flaming torch/fire
+            icon.fillStyle(0xff6600, 1);
+            icon.fillRect(x + size / 2 - 3, y + 18, 6, 18);
+            icon.fillStyle(0xff0000, 1);
+            icon.fillCircle(x + size / 2, y + 8, 6);
+            icon.fillStyle(0xffaa00, 1);
+            icon.fillCircle(x + size / 2 - 3, y + 5, 4);
+            icon.fillCircle(x + size / 2 + 3, y + 7, 4);
+        }
+        this.upgradeMenuContainer.push(icon);
+
+        // Label text below icon
+        const labelText = this.add.text(x + size / 2, y + size + 18, label, {
+            fontSize: "10px",
+            fill: "#ffd700",
+            fontStyle: "bold",
+            align: "center",
+            fontFamily: "Georgia, serif",
+        });
+        labelText.setOrigin(0.5, 0);
+        labelText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(labelText);
+
+        // Level text in corner
+        const levelText = this.add.text(
+            x + size - 10,
+            y + size - 12,
+            `Lv${level}`,
+            {
+                fontSize: "10px",
+                fill: "#ffff00",
+                fontStyle: "bold",
+                fontFamily: "Georgia, serif",
+            },
+        );
+        levelText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(levelText);
+
+        // Cost text
+        const costText = this.add.text(x + size / 2, y + size + 5, `$${cost}`, {
+            fontSize: "11px",
+            fill: "#ffdd00",
+            align: "center",
+            fontStyle: "bold",
+            fontFamily: "Georgia, serif",
+        });
+        costText.setOrigin(0.5, 0);
+        costText.setScrollFactor(0);
+        this.upgradeMenuContainer.push(costText);
+
+        // Make clickable
+        const button = this.add.zone(x + size / 2, y + size / 2, size, size);
+        button.setScrollFactor(0);
+        button.setInteractive();
+        button.on("pointerdown", () => this.upgradeTower(tower, upgradeType));
+        this.upgradeMenuContainer.push(button);
+    }
+
+    upgradeTower(tower, upgradeType) {
+        const cost = tower.upgradeCosts[upgradeType];
+
+        if (this.money >= cost) {
+            tower.upgrade(upgradeType);
+            this.money -= cost;
+            this.updateUI();
+            this.showTowerUpgradeMenu(tower);
+        } else {
+            this.infoText.setText("Not enough money for upgrade!");
+            this.time.delayedCall(2000, () => {
+                this.infoText.setText("Click to place towers ($100)");
+            });
+        }
+    }
+
+    hideTowerUpgradeMenu() {
+        if (this.upgradeMenuContainer) {
+            this.upgradeMenuContainer.forEach((element) => element.destroy());
+            this.upgradeMenuContainer = null;
+        }
+        this.selectedTower = null;
     }
 
     drawCastle(graphics, baseColor = 0x888888) {
@@ -390,19 +664,13 @@ export class Game extends Phaser.Scene {
             }
         }
 
-        console.log(`Tower placed at ${gridX},${gridY}`);
         return tower;
     }
 
     startWave() {
-        console.log(`Starting wave ${this.wave}`);
         this.waveActive = true;
         this.waveEnemiesTotal = 5 + this.wave * 2; // 7 enemies wave 1, 9 wave 2, etc.
         this.waveEnemiesDefeated = 0;
-
-        console.log(
-            `Wave ${this.wave}: spawning ${this.waveEnemiesTotal} enemies`,
-        );
 
         this.infoText.setText(
             `Wave ${this.wave} starting! ${this.waveEnemiesTotal} enemies`,
@@ -446,23 +714,12 @@ export class Game extends Phaser.Scene {
     requestPath(fromX, fromY, toX, toY, enemy) {
         if (!enemy) return;
 
-        console.log(
-            `Requesting path from (${fromX},${fromY}) to (${toX},${toY}) for enemy`,
-        );
         this.easyStar.findPath(fromX, fromY, toX, toY, (path) => {
             if (path && path.length > 0 && enemy.active) {
-                console.log(`Path found with ${path.length} nodes:`, path);
                 enemy.gridPath = path;
                 enemy.pathIndex = 0;
                 enemy.isMoving = true;
                 this.moveEnemyAlongPath(enemy);
-            } else {
-                console.log(
-                    `No path found or enemy inactive. Path:`,
-                    path,
-                    `Active:`,
-                    enemy.active,
-                );
             }
         });
         this.easyStar.calculate();
@@ -509,9 +766,6 @@ export class Game extends Phaser.Scene {
                 if (!enemy.reachedTarget) {
                     enemy.reachedTarget = true;
                     this.waveEnemiesDefeated++;
-                    console.log(
-                        `Enemy reached target. Defeated: ${this.waveEnemiesDefeated}/${this.waveEnemiesTotal}`,
-                    );
                 }
             }
         }
@@ -553,20 +807,14 @@ export class Game extends Phaser.Scene {
 
     moveEnemyAlongPath(enemy) {
         if (!enemy || !enemy.active) {
-            console.log(`moveEnemyAlongPath: enemy is null or inactive`);
             return;
         }
 
         if (!enemy.gridPath || enemy.pathIndex >= enemy.gridPath.length) {
             // Reached end of path - stop moving, damage handled by timer
-            console.log(`moveEnemyAlongPath: reached end of path`);
             enemy.isMoving = false;
             return;
         }
-
-        console.log(
-            `moveEnemyAlongPath: moving to node ${enemy.pathIndex} of ${enemy.gridPath.length}`,
-        );
 
         const nextNode = enemy.gridPath[enemy.pathIndex];
         const targetX = nextNode.x * this.gridSize + this.gridSize / 2;
@@ -581,14 +829,13 @@ export class Game extends Phaser.Scene {
         );
 
         enemy.isMoving = true;
-        console.log(`Starting movement tween to (${targetX}, ${targetY})`);
 
         // Degrade grass on target tile
         const gridX = nextNode.x;
         const gridY = nextNode.y;
         if (this.grassHealth[gridY] && this.grassHealth[gridY][gridX] > 0) {
             this.grassHealth[gridY][gridX]--;
-            this.drawGrassTile(gridX, gridY);
+            this.updateGrassTileColor(gridX, gridY);
         }
 
         this.tweens.add({
@@ -719,19 +966,12 @@ export class Game extends Phaser.Scene {
 
             this.money += moneyReward;
             this.waveEnemiesDefeated++;
-            console.log(
-                `Enemy killed for $${moneyReward}. Defeated: ${this.waveEnemiesDefeated}/${this.waveEnemiesTotal}`,
-            );
             this.updateUI();
             this.checkWaveComplete();
         }
     }
 
     checkWaveComplete() {
-        console.log(
-            `Wave complete check: ${this.waveEnemiesDefeated}/${this.waveEnemiesTotal}, active: ${this.waveActive}`,
-        );
-
         if (
             this.waveActive &&
             this.waveEnemiesDefeated >= this.waveEnemiesTotal
@@ -742,10 +982,6 @@ export class Game extends Phaser.Scene {
 
             this.infoText.setText(
                 `Wave ${this.wave - 1} complete! Next wave in 10 seconds...`,
-            );
-
-            console.log(
-                `Wave ${this.wave - 1} complete! Starting wave ${this.wave} in 10 seconds`,
             );
 
             // Start next wave after 10 seconds

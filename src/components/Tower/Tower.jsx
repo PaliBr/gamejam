@@ -10,10 +10,27 @@ export class Tower extends Phaser.GameObjects.Graphics {
         this.lastFireTime = 0;
         this.range = 150;
         this.damage = 25;
+        this.accuracy = 1; // Accuracy multiplier (affects damage)
         this.target = null;
         this.isSelected = false;
         this.cost = 100;
         this.barrelAngle = 0;
+
+        // Upgrade levels
+        this.upgrades = {
+            range: 0, // Range upgrade
+            strength: 0, // Damage upgrade
+            accuracy: 0, // Accuracy upgrade
+            fireRate: 0, // Attack speed upgrade
+        };
+
+        // Upgrade costs
+        this.upgradeCosts = {
+            range: 75,
+            strength: 75,
+            accuracy: 75,
+            fireRate: 75,
+        };
 
         if (scene && scene.add) {
             scene.add.existing(this);
@@ -114,6 +131,9 @@ export class Tower extends Phaser.GameObjects.Graphics {
     select() {
         this.isSelected = true;
         this.drawTower();
+        // Notify scene that a tower was selected
+        this.scene.selectedTower = this;
+        this.scene.showTowerUpgradeMenu(this);
     }
 
     deselect() {
@@ -167,7 +187,25 @@ export class Tower extends Phaser.GameObjects.Graphics {
             this.target.y,
         );
 
-        this.scene.addBullet(this.x, this.y, angle, this.damage);
+        // Apply accuracy multiplier to damage
+        const effectiveDamage = this.damage * this.accuracy;
+        this.scene.addBullet(this.x, this.y, angle, effectiveDamage);
+    }
+
+    upgrade(type) {
+        if (type === "range") {
+            this.range += 30; // Increase range by 30 pixels
+            this.upgrades.range++;
+        } else if (type === "strength") {
+            this.damage += 10; // Increase damage by 10
+            this.upgrades.strength++;
+        } else if (type === "accuracy") {
+            this.accuracy += 0.2; // Increase accuracy (multiply damage)
+            this.upgrades.accuracy++;
+        } else if (type === "fireRate") {
+            this.fireRate = Math.max(200, this.fireRate - 150); // Decrease fire rate (faster)
+            this.upgrades.fireRate++;
+        }
     }
 
     update() {
