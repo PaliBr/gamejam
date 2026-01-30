@@ -79,7 +79,6 @@ this must be:
 2. repeatable
 3. partially random
 4. click on tile
-
 **collecting resources**
 - resources
 - are randomly appearing on map
@@ -98,15 +97,63 @@ this must be:
 
 
 ### movement rules
+this needs to be talked and decided:\
 movement speed\
 movement direction\
 movement restrictions
 
 ### game progression
-resources\
-actions\
-mask integration\
-win/lose condition
+each player start game with gold (100) food supply (50) and one active farm field\
+farm field generate 1 food/5s
+basic pest control tower
+"the city" is providing building resources (metal, polymer, ceramics, power) and consume 2 food/5s - food consumption rises over time
+
+
+player has to upgrade food production ,build pest controll towers and collect appearing resources
+
+after 1 minute, first wave of pests appear
+second wave will activate the "pest button" wich will send aditional pests to both players (this button has a cooldown and is available to both players indipendenty)
+waves are equally distributed to both players
+when one player have all fields completely infected, pests will divide 80:20 with more pests attacking player with healthlier food production
+
+food consumption and pests count increase over time
+using pesticides is more effective than normal towers but using pesticides diminishes farms food production
+
+when player obtain 5 mask pieces, upon activating mask button will be teleported to random location in second players territory and can perform actions 
+- collect random appearig resources
+- upgrade or downgrade farm field
+- turn towers power on/off
+- steal resources upon clicking on city tile
+
+- mask activation last for max 10 seconds
+- mask activation has 30 second cooldown
+- player need to go home manually
+- if wearing foreing mask foreign towers are friendly
+- if wearing foreign mask players own towers attack him
+
+
+  when player obtain 7 books, upon activating book button will take off mask
+  - without mask player is not targeted with any towers
+  - player can acces "the pest fields" location
+  - there you are able to build 2 farmfields, that will attract pests and feed them, to stop infesting human lands
+  - there are also 2 farmfields slots for other player to build upon
+  - when you max your fields, second player will have option to improve this field (with his knowledge) to double the pest attraction rate,
+  - you will also have option to improve second player maxed pest fields to double its production and stop pests from infesting your lands.
+
+
+### objective
+
+if both players starves - "game over" => final score will be shown and saved to hiscores
+
+if one player starves:
+- his food runs out, he can't build farmfields, or towers, 
+- his avatar speed is reduced, but he is able to collect resources and use mask features
+- his resource production will rapidly
+- his food consumption rate will slowly decrease
+- 
+if both players fill their food supply to max - "win win" => final score will be shown and saved to hiscores
+
+score formula: ((total generated food amount)*(10[only if both players win]))/((number of seconds from start)/100)
 
 
 ## Sounds
