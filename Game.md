@@ -12,16 +12,14 @@ This is place for suggestions about this document
 ## MVP [minimum viable product]
 ### setup 
 - [ ]  basic engine
----
 - [ ]  game lobby - screen for player matching and starting gameplay
----
-      
 - [ ]  the map - simple map that conatains: player base - the city, slots for farms, slots for towers, paths, basic enviroment
 - [ ]  UI - buttons and resources information
----
-- [ ]  avatar movement 
+- [ ]  avatar movement
+
 ### mechanics
 - [ ]  creeps movement mechanic
+- [ ]  building farms and towers
 - [ ]  avatar interaction mechanic
 - [ ]  using mask mechanic
 - [ ]  cooperation mode - how its played, how it ends
@@ -36,9 +34,6 @@ This is place for suggestions about this document
   - [ ] score
   - [ ] scoreboard
   - [ ] difficulty
-
-
-
 ## Game lore
 
 ### story
