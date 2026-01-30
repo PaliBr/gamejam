@@ -58,6 +58,18 @@ Game UI size
 
 ### controls
 
+click on tile - avatar moves to clicked tile\
+click on tile with avatar neraby - popup building/upgrade menu\
+bug button - this will send wave of pest to both players\
+mask button - this will activate the mask mode
+
+**ingame menu button**
+
+1. new game
+2. music volume
+3. sounds volume
+4. hiscore
+5. exit game
 
 ### core loop
 this must be:
@@ -69,15 +81,13 @@ this must be:
 ### movement rules
 movement speed\
 movement direction\
-movement restrictions\
+movement restrictions
 
 ### game progression
 resources\
 actions\
 mask integration\
-win/lose condition\
-
-
+win/lose condition
 
 
 ## Sounds
