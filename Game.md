@@ -8,7 +8,7 @@ This is place for suggestions about this document
 2. Genre
 3. Target audience
 
-## MPV [minimum viable product]
+## MVP [minimum viable product]
 ### setup 
 - [ ]  basic engine
 ---
