@@ -2,6 +2,7 @@
 
 ## Pinboard 
 This is place for suggestions about this document
+> porada ohladom mapy a core loop 
 
 ## Gameinfo
 1. Title: unknown
@@ -60,12 +61,28 @@ grid
 Game UI size
 > ?
 
+### controls
+
+
 ### core loop
 this must be:
 1. fun
 2. repeatable
 3. partially random
 4. click on tile
+
+### movement rules
+movement speed\
+movement direction\
+movement restrictions\
+
+### game progression
+resources\
+actions\
+mask integration\
+win/lose condition\
+
+
 
 
 ## Sounds
