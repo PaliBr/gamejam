@@ -1,4 +1,15 @@
-# Project *Game*
+# Project *Gamename*
+
+## Gameinfo
+1. Title
+2. Genre
+3. Target audience
+
+## Game lore
+
+### story
+> how did we get here...
+### setting
 
 ## Development
 
