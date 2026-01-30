@@ -4,9 +4,9 @@
 This is place for suggestions about this document
 
 ## Gameinfo
-1. Title
-2. Genre
-3. Target audience
+1. Title: unknown
+2. Genre: tower defense
+3. Target audience: web browser users
 
 ## MVP [minimum viable product]
 ### setup 
@@ -47,6 +47,26 @@ This is place for suggestions about this document
 ## Development
 
 ## Game design
+### screen parameters
+display resolution
+> 1280x720
+
+tile resolution
+> 40x40
+
+grid
+> 32x18 tiles
+
+Game UI size
+> ?
+
+### core loop
+this must be:
+1. fun
+2. repeatable
+3. partially random
+4. click on tile
+
 
 ## Sounds
 
