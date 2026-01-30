@@ -33,3 +33,5 @@
  >> first commit for in Game track 1
  > - [*in Game 0.1.2*](https://is.gd/YklHx0)
  >> add bass + drums
+ > - [*in Game 0.1.3*](https://is.gd/PhFDch)
+ >> add several bars should lower the bass
