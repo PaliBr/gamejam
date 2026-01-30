@@ -1,16 +1,49 @@
 # Project *Gamename*
 
+## Pinboard 
+This is place for suggestions about this document
+
 ## Gameinfo
 1. Title
 2. Genre
 3. Target audience
+
+## MPV [minimum viable product]
+### setup 
+- [ ]  basic engine
+---
+- [ ]  game lobby - screen for player matching and starting gameplay
+---
+      
+- [ ]  the map - simple map that conatains: player base - the city, slots for farms, slots for towers, paths, basic enviroment
+- [ ]  UI - buttons and resources information
+---
+- [ ]  avatar movement 
+### mechanics
+- [ ]  creeps movement mechanic
+- [ ]  avatar interaction mechanic
+- [ ]  using mask mechanic
+- [ ]  cooperation mode - how its played, how it ends
+### level design
+- [ ]     first playable level
+- [ ]     second level focused on cooperation (optional)
+### polish (optional)
+  - [ ] menu
+  - [ ] settings
+  - [ ] music
+  - [ ] sounds
+  - [ ] score
+  - [ ] scoreboard
+  - [ ] difficulty
+
+
 
 ## Game lore
 
 ### story
 > how did we get here...
 ### setting
-
+> what is this place...
 ## Development
 
 ## Game design
