@@ -6,7 +6,7 @@ This is place for suggestions about this document
 
 ## Gameinfo
 1. Title: unknown
-2. Genre: tower defense
+2. Genre: co-op tower defense
 3. Target audience: web browser users
 
 ## MVP [minimum viable product]
@@ -61,7 +61,9 @@ Game UI size
 click on tile - avatar moves to clicked tile\
 click on tile with avatar neraby - popup building/upgrade menu\
 bug button - this will send wave of pest to both players\
-mask button - this will activate the mask mode
+player's mask button - wear home mask\
+foreign mask button - wear second player's mask - this allows you to go to their grounds and make actions with buildings
+book button - this will unmask player
 
 **ingame menu button**
 
@@ -77,6 +79,23 @@ this must be:
 2. repeatable
 3. partially random
 4. click on tile
+
+**collecting resources**
+- resources
+- are randomly appearing on map
+- appear for random limited time
+- can be colleted by any avatar
+
+- gold nugget - add 2-5 gold
+- mask piece - player has to collect 5 mask pieces to be able to use second player's mask
+- book - player has to collect 7 books to be able to use "book button" - wich will unmask player upon activation
+- food piece - add 3-10 to players food supply
+- 
+- cherry tile
+- mushroom tile
+- apple tile
+- blueberry tile
+
 
 ### movement rules
 movement speed\
