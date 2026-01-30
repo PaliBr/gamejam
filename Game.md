@@ -18,4 +18,5 @@
  >> bass + drums
  > - [*Flute.1.1.4*](https://is.gd/YT3iVb)
  >> loop structure
- > [*in Game 0.0.1*](https://is.gd/rZSloC)
+ > - [*in Game 0.0.1*](https://is.gd/rZSloC)
+ > - first commit for in Game track 1   
