@@ -2,7 +2,9 @@
 
 ## Pinboard 
 This is place for suggestions about this document
-> porada ohladom mapy a core loop 
+> porada ohladom mapy a core loop
+> MVP - co tam podla vas parti a co vynechat
+> pravidla pohybu, co vy na to? treba vymysliet a zapisat
 
 ## Gameinfo
 1. Title: unknown
@@ -12,7 +14,7 @@ This is place for suggestions about this document
 ## MVP [minimum viable product]
 ### setup 
 - [ ]  basic engine
-- [ ]  game lobby - screen for player matching and starting gameplay
+- [x]  game lobby - screen for player matching and starting gameplay
 - [ ]  the map - simple map that conatains: player base - the city, slots for farms, slots for towers, paths, basic enviroment
 - [ ]  UI - buttons and resources information
 - [ ]  avatar movement
@@ -47,10 +49,7 @@ This is place for suggestions about this document
 display resolution
 > 1280x720
 
-tile resolution
-> 40x40
-
-grid
+tile grid
 > 32x18 tiles
 
 Game UI size
@@ -58,12 +57,11 @@ Game UI size
 
 ### controls
 
-click on tile - avatar moves to clicked tile\
-click on tile with avatar neraby - popup building/upgrade menu\
-bug button - this will send wave of pest to both players\
-player's mask button - wear home mask\
-foreign mask button - wear second player's mask - this allows you to go to their grounds and make actions with buildings
-book button - this will unmask player
+click on tile - avatar moves to clicked tile and collect resource if there\
+click on tile with avatar neraby - popup building upgrade/downgrade menu\
+bug button (optional)- this will send wave of pest to both players\
+foreign mask button - wear second player's mask - this allows you to go to their grounds and do actions with buildings\
+book button - this will unmask player and allow him to go to restricted area
 
 **ingame menu button**
 
@@ -82,13 +80,13 @@ this must be:
 **collecting resources**
 - resources
 - are randomly appearing on map
-- appear for random limited time
+- appear for random time and disappear afterwards
 - can be colleted by any avatar
 
-- gold nugget - add 2-5 gold
+- gold nugget - add 2-5 gold 
 - mask piece - player has to collect 5 mask pieces to be able to use second player's mask
 - book - player has to collect 7 books to be able to use "book button" - wich will unmask player upon activation
-- food piece - add 3-10 to players food supply
+- food piece - add 3-10 to players food supply (increase over time)
 - 
 - cherry tile
 - mushroom tile
@@ -103,11 +101,14 @@ movement direction\
 movement restrictions
 
 ### game progression
+**START**
+
 each player start game with gold (100) food supply (50) and one active farm field\
 farm field generate 1 food/5s
 basic pest control tower
 "the city" is providing building resources (metal, polymer, ceramics, power) and consume 2 food/5s - food consumption rises over time
 
+**gameplay**
 
 player has to upgrade food production ,build pest controll towers and collect appearing resources
 
@@ -118,6 +119,8 @@ when one player have all fields completely infected, pests will divide 80:20 wit
 
 food consumption and pests count increase over time
 using pesticides is more effective than normal towers but using pesticides diminishes farms food production
+
+**special actions**
 
 when player obtain 5 mask pieces, upon activating mask button will be teleported to random location in second players territory and can perform actions 
 - collect random appearig resources
@@ -132,28 +135,28 @@ when player obtain 5 mask pieces, upon activating mask button will be teleported
 - if wearing foreign mask players own towers attack him
 
 
-  when player obtain 7 books, upon activating book button will take off mask
-  - without mask player is not targeted with any towers
-  - player can acces "the pest fields" location
-  - there you are able to build 2 farmfields, that will attract pests and feed them, to stop infesting human lands
-  - there are also 2 farmfields slots for other player to build upon
-  - when you max your fields, second player will have option to improve this field (with his knowledge) to double the pest attraction rate,
-  - you will also have option to improve second player maxed pest fields to double its production and stop pests from infesting your lands.
+ when player obtain 7 books, upon activating book button will take off mask
+ - without mask player is not targeted with any towers
+ - player can acces "the pest fields" location
+ - there you are able to build 2 farmfields, that will attract pests and feed them, to stop infesting human lands
+ - there are also 2 farmfields slots for other player to build upon
+ - when you max your fields, second player will have option to improve this field (with his knowledge) to double the pest attraction rate,
+ - you will also have option to improve second player maxed pest fields to double its production and stop pests from infesting your lands.
 
 
 ### objective
 
-if both players starves - "game over" => final score will be shown and saved to hiscores
+**if both players starves** - "game over" => final score will be shown and saved to hiscores
 
-if one player starves:
+**if one player starves:**
 - his food runs out, he can't build farmfields, or towers, 
 - his avatar speed is reduced, but he is able to collect resources and use mask features
 - his resource production will rapidly
 - his food consumption rate will slowly decrease
 - 
-if both players fill their food supply to max - "win win" => final score will be shown and saved to hiscores
+**if both players fill their food supply to max** - "win win" => final score will be shown and saved to hiscores
 
-score formula: ((total generated food amount)*(10[only if both players win]))/((number of seconds from start)/100)
+**score formula:** ((total generated food amount)*(10[only if both players win]))/((number of seconds from start)/100)
 
 
 ## Sounds
